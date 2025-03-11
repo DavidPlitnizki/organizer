@@ -62,17 +62,14 @@ export default function RootLayout() {
     return null;
   }
 
-  console.log("isDarkColorScheme: ", isDarkColorScheme);
-
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <StatusBar style={isDarkColorScheme ? "dark" : "light"} />
-      <Stack />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
     </ThemeProvider>
   );
 }
-
-const useIsomorphicLayoutEffect =
-  Platform.OS === "web" && typeof window === "undefined"
-    ? React.useEffect
-    : React.useLayoutEffect;
