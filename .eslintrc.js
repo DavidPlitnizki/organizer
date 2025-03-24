@@ -1,8 +1,14 @@
 module.exports = {
-  extends: ["expo", "prettier"],
-  plugins: ["prettier"],
+  extends: [
+    'expo',
+    'prettier',
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+  ],
+  plugins: ['prettier', 'react', 'react-hooks'],
   rules: {
-    "prettier/prettier": "error",
-    "trailingComma": "none"
+    'prettier/prettier': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
   },
 };
