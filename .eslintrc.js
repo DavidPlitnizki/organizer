@@ -11,4 +11,7 @@ module.exports = {
     'prettier/prettier': 'error',
     'react-hooks/exhaustive-deps': 'warn',
   },
+  global: {
+    'setTImeout': 'readonly'
+  }
 };

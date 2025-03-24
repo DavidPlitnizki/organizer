@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View } from 'react-native';
 import { useMemo, useState } from 'react';
 import { Button } from '~/components/ui/button';
@@ -30,7 +30,7 @@ interface CardTaskProps {
   title: string;
 }
 
-const CardTask = ({ title }: CardTaskProps) => {
+const CardTask = memo(({ title }: CardTaskProps) => {
   const [checked, setChecked] = useState(false);
   const randomNumber = useMemo(
     () => Math.floor(Math.random() * CARD_COLORS.length),
@@ -60,6 +60,11 @@ const CardTask = ({ title }: CardTaskProps) => {
       </CardHeader>
 
       <CardFooter className="p-0 items-center justify-center gap-8">
+        <Checkbox
+          aria-labelledby="task_done"
+          checked={checked}
+          onCheckedChange={setChecked}
+        />
         <Button
           size={'sm'}
           variant={'outline'}
@@ -67,16 +72,9 @@ const CardTask = ({ title }: CardTaskProps) => {
         >
           <DeleteIcon color={'red'} />
         </Button>
-        <View className="flex flex-row">
-          <Checkbox
-            aria-labelledby="task_done"
-            checked={checked}
-            onCheckedChange={setChecked}
-          />
-        </View>
       </CardFooter>
     </Card>
   );
-};
+});
 
 export default CardTask;

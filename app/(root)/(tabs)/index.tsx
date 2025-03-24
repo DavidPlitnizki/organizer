@@ -1,4 +1,4 @@
-import { FlatList } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 import React, { useMemo, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DATA } from '~/mockData';
@@ -16,9 +16,11 @@ export default function Home() {
     );
   }, [searchValue]);
 
+  const paddingBottom = Platform.OS === 'ios' ? 'pb-14' : 'pb-20';
+
   return (
-    <SafeAreaView className="relative px-2 h-full pb-20">
-      <SearchCard value={searchValue} setValue={setSearchValue} />
+    <SafeAreaView className={`relative px-2 h-full ${paddingBottom}`}>
+      <SearchCard setValue={setSearchValue} setModalVisible={setModalVisible} />
       <FlatList
         className="mt-2"
         data={filteredData}
