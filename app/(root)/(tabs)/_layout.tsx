@@ -4,6 +4,9 @@ import { NotepadText as PlannerIcon } from "../../../lib/icons/PlannerIcon";
 import { View, Text } from "react-native";
 import { ElementType } from "react";
 import { useTheme } from "@react-navigation/native";
+import { Plus as PlusIcon } from "../../../lib/icons/PlusIcon";
+import { Button } from "~/components/ui/button";
+import { useRouter } from "expo-router";
 
 const TabIcon = ({
   focused,
@@ -32,6 +35,7 @@ const TabIcon = ({
 };
 
 const TabsLayout = () => {
+  const router = useRouter();
   const { colors } = useTheme();
   return (
     <Tabs
@@ -53,6 +57,21 @@ const TabsLayout = () => {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} title="Home" icon={HomeIcon} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="newTask"
+        options={{
+          title: "Create",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <Button
+              className="rounded-full w-12 shadow-md top-3"
+              onPress={() => router.push("/(root)/(tabs)/newTask")}
+            >
+              <PlusIcon color={colors.background} size={32} />
+            </Button>
           ),
         }}
       />
