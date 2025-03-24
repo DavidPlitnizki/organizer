@@ -1,26 +1,20 @@
-import { View, Text } from "react-native";
-import React from "react";
-import PieChart from "react-native-pie-chart";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { View, Text } from 'react-native';
+import React from 'react';
+import PieChart from 'react-native-pie-chart';
+import { Card, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 
 const widthAndHeight = 140;
 
 const series = [
   {
     value: 4,
-    color: "#16a34a",
-    label: { text: "4", fontSize: 14, fontWeight: "bold" },
+    color: '#16a34a',
+    label: { text: '4', fontSize: 14, fontWeight: 'bold' },
   },
   {
     value: 6,
-    color: "#60a5fa",
-    label: { text: "6", fontSize: 14, fontWeight: "bold" },
+    color: '#60a5fa',
+    label: { text: '6', fontSize: 14, fontWeight: 'bold' },
   },
 ];
 

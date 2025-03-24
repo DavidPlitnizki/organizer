@@ -1,5 +1,6 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import StatisticsPie from "~/widgets/StatisticsPie";
+import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import StatisticsPie from '~/widgets/StatisticsPie';
 
 const Statistics = () => {
   return (

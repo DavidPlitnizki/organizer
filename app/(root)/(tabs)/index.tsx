@@ -20,7 +20,7 @@ export default function Home() {
     <SafeAreaView className="relative px-2 h-full pb-20">
       <SearchCard value={searchValue} setValue={setSearchValue} />
       <FlatList
-        className="mt-4"
+        className="mt-2"
         data={filteredData}
         renderItem={({ item }) => <CardTask title={item.title} />}
         keyExtractor={(item) => item.id}

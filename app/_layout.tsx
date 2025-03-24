@@ -1,17 +1,17 @@
-import "./global.css";
-import { useFonts } from "expo-font";
+import './global.css';
+import { useFonts } from 'expo-font';
 import {
   Theme,
   ThemeProvider,
   DefaultTheme,
   DarkTheme,
-} from "@react-navigation/native";
-import { SplashScreen, Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import * as React from "react";
-import { NAV_THEME } from "~/lib/constants";
-import { useColorScheme } from "~/lib/useColorScheme";
-import { useEffect, useRef, useState } from "react";
+} from '@react-navigation/native';
+import { SplashScreen, Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import * as React from 'react';
+import { NAV_THEME } from '~/lib/constants';
+import { useColorScheme } from '~/lib/useColorScheme';
+import { useEffect, useRef, useState } from 'react';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -22,20 +22,20 @@ const DARK_THEME: Theme = {
   colors: NAV_THEME.dark,
 };
 
-export { ErrorBoundary } from "expo-router";
+export { ErrorBoundary } from 'expo-router';
 
 export default function RootLayout() {
   const hasMounted = useRef(false);
-  const { colorScheme, isDarkColorScheme } = useColorScheme();
+  const { isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
-  const [user, setUser] = useState(false);
+  const [user] = useState(false);
   const [fontsLoaded] = useFonts({
-    "Rubik-Bold": require("../assets/fonts/Rubik-Bold.ttf"),
-    "Rubik-ExtraBold": require("../assets/fonts/Rubik-ExtraBold.ttf"),
-    "Rubik-Light": require("../assets/fonts/Rubik-Light.ttf"),
-    "Rubik-Medium": require("../assets/fonts/Rubik-Medium.ttf"),
-    "Rubik-Regular": require("../assets/fonts/Rubik-Regular.ttf"),
-    "Rubik-SemiBold": require("../assets/fonts/Rubik-SemiBold.ttf"),
+    'Rubik-Bold': require('../assets/fonts/Rubik-Bold.ttf'),
+    'Rubik-ExtraBold': require('../assets/fonts/Rubik-ExtraBold.ttf'),
+    'Rubik-Light': require('../assets/fonts/Rubik-Light.ttf'),
+    'Rubik-Medium': require('../assets/fonts/Rubik-Medium.ttf'),
+    'Rubik-Regular': require('../assets/fonts/Rubik-Regular.ttf'),
+    'Rubik-SemiBold': require('../assets/fonts/Rubik-SemiBold.ttf'),
   });
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
 
       if (!user) {
-        console.log("not user");
+        console.log('not user');
         // router.replace("/sign-in");
       }
     }
@@ -63,7 +63,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "dark" : "light"} />
+      <StatusBar style={isDarkColorScheme ? 'dark' : 'light'} />
       <Stack
         screenOptions={{
           headerShown: false,

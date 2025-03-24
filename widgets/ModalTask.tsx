@@ -1,10 +1,10 @@
-import { View, Modal, Alert } from "react-native";
-import React, { useRef, useState } from "react";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { Textarea } from "~/components/ui/textarea";
+import { View, Modal } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Button } from '~/components/ui/button';
+import { Text } from '~/components/ui/text';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import { Textarea } from '~/components/ui/textarea';
 
 interface ModalTaskProps {
   modalVisible: boolean;
@@ -12,8 +12,8 @@ interface ModalTaskProps {
 }
 
 const ModalTask = ({ modalVisible, setModalVisible }: ModalTaskProps) => {
-  const [inputValue, setInputValue] = useState("");
-  const [textAreaValue, setTextAreaValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
+  const [textAreaValue, setTextAreaValue] = useState('');
   const textAreaRef = useRef(null);
   return (
     <Modal

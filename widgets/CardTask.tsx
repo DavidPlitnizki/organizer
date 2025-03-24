@@ -1,28 +1,29 @@
-import { View } from "react-native";
-import { useMemo, useState } from "react";
-import { Button } from "~/components/ui/button";
+import React from 'react';
+import { View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Button } from '~/components/ui/button';
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Trash2 as DeleteIcon } from "~/lib/icons/DeleteIcon";
+} from '~/components/ui/card';
+import { Checkbox } from '~/components/ui/checkbox';
+import { Trash2 as DeleteIcon } from '~/lib/icons/DeleteIcon';
 
 const CARD_COLORS = [
-  "bg-emerald-100",
-  "bg-teal-100",
-  "bg-cyan-100",
-  "bg-sky-100",
-  "bg-blue-100",
-  "bg-indigo-100",
-  "bg-violet-100",
-  "bg-purple-100",
-  "bg-fuchsia-100",
-  "bg-pink-100",
-  "bg-rose-100",
+  'bg-emerald-100',
+  'bg-teal-100',
+  'bg-cyan-100',
+  'bg-sky-100',
+  'bg-blue-100',
+  'bg-indigo-100',
+  'bg-violet-100',
+  'bg-purple-100',
+  'bg-fuchsia-100',
+  'bg-pink-100',
+  'bg-rose-100',
 ];
 
 interface CardTaskProps {
@@ -38,16 +39,16 @@ const CardTask = ({ title }: CardTaskProps) => {
 
   return (
     <Card
-      className={`flex flex-row w-full my-2 px-4 items-center justify-between ${checked ? "bg-gray-300" : CARD_COLORS[randomNumber]}`}
+      className={`flex flex-row w-full my-2 px-4 items-center justify-between ${checked ? 'bg-gray-300' : CARD_COLORS[randomNumber]}`}
     >
       <CardHeader className="flex flex-col px-1 max-w-72">
         <CardTitle
-          className={`text-xl text-text font-rubik-bold ${checked ? "line-through text-muted-foreground" : ""}`}
+          className={`text-xl text-text font-rubik-bold ${checked ? 'line-through text-muted-foreground' : ''}`}
         >
           {title}
         </CardTitle>
         <CardDescription
-          className={`${checked ? "line-through text-muted-foreground" : ""}`}
+          className={`${checked ? 'line-through text-muted-foreground' : ''}`}
           numberOfLines={3}
           ellipsizeMode="tail"
         >
@@ -60,11 +61,11 @@ const CardTask = ({ title }: CardTaskProps) => {
 
       <CardFooter className="p-0 items-center justify-center gap-8">
         <Button
-          size={"sm"}
-          variant={"outline"}
+          size={'sm'}
+          variant={'outline'}
           className="p-2 border-destructive bg-white"
         >
-          <DeleteIcon color={"red"} />
+          <DeleteIcon color={'red'} />
         </Button>
         <View className="flex flex-row">
           <Checkbox

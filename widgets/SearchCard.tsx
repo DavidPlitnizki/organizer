@@ -1,9 +1,10 @@
-import { useTheme } from "@react-navigation/native";
-import { View } from "react-native";
-import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { CircleEllipsis } from "~/lib/icons/CircleEllipsis";
+import React from 'react';
+import { useTheme } from '@react-navigation/native';
+import { View } from 'react-native';
+import { Button } from '~/components/ui/button';
+import { Card } from '~/components/ui/card';
+import { Input } from '~/components/ui/input';
+import { CircleEllipsis } from '~/lib/icons/CircleEllipsis';
 
 interface IProps {
   value: string;
@@ -24,7 +25,7 @@ const SearchCard = ({ value, setValue }: IProps) => {
           aria-labelledby="inputLabel"
           aria-errormessage="inputError"
         />
-        <Button variant={"ghost"} className="rounded-full m-0 p-0 w-12">
+        <Button variant={'ghost'} className="rounded-full m-0 p-0 w-12">
           <CircleEllipsis size={32} color={colors.text} />
         </Button>
       </View>
