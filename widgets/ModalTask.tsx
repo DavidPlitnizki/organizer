@@ -1,5 +1,5 @@
 import { View, Modal } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { memo, useRef, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Input } from '~/components/ui/input';
@@ -11,7 +11,7 @@ interface ModalTaskProps {
   setModalVisible: (value: boolean) => void;
 }
 
-const ModalTask = ({ modalVisible, setModalVisible }: ModalTaskProps) => {
+const ModalTask = memo(({ modalVisible, setModalVisible }: ModalTaskProps) => {
   const [inputValue, setInputValue] = useState('');
   const [textAreaValue, setTextAreaValue] = useState('');
   const textAreaRef = useRef(null);
@@ -72,6 +72,8 @@ const ModalTask = ({ modalVisible, setModalVisible }: ModalTaskProps) => {
       </View>
     </Modal>
   );
-};
+});
+
+ModalTask.displayName = 'ModalTask';
 
 export default ModalTask;

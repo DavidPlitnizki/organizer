@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { View } from 'react-native';
 import { Button } from '~/components/ui/button';
@@ -11,7 +11,7 @@ interface IProps {
   setModalVisible: (value: boolean) => void;
 }
 
-const SearchCard = ({ setValue, setModalVisible }: IProps) => {
+const SearchCard = memo(({ setValue, setModalVisible }: IProps) => {
   const { colors } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -29,6 +29,7 @@ const SearchCard = ({ setValue, setModalVisible }: IProps) => {
 
   useEffect(() => {
     setValue(debouncedValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
 
   return (
@@ -56,6 +57,8 @@ const SearchCard = ({ setValue, setModalVisible }: IProps) => {
       </View>
     </Card>
   );
-};
+});
+
+SearchCard.displayName = 'SearchCard';
 
 export default SearchCard;
