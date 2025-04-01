@@ -57,7 +57,6 @@ export default function RootLayout() {
       }
 
       if (!user) {
-        // signOut(auth);
         router.replace('/(auth)/sign-in');
       }
     }
