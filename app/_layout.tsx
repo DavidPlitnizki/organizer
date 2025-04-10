@@ -5,13 +5,17 @@ import {
   ThemeProvider,
   DefaultTheme,
   DarkTheme,
+  useTheme,
 } from '@react-navigation/native';
-import { SplashScreen, Stack } from 'expo-router';
+import { router, SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { NAV_THEME } from '~/lib/constants';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { useEffect, useRef, useState } from 'react';
+import { auth } from '~/lib/firebase.config';
+import { onAuthStateChanged } from 'firebase/auth';
+import { Text } from 'react-native';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -27,8 +31,9 @@ export { ErrorBoundary } from 'expo-router';
 export default function RootLayout() {
   const hasMounted = useRef(false);
   const { isDarkColorScheme } = useColorScheme();
-  const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
-  const [user] = useState(false);
+  const [isColorSchemeLoaded, setIsColorSchemeLoaded] = useState(false);
+  const [user, setUser] = useState(false);
+  const { colors } = useTheme();
   const [fontsLoaded] = useFonts({
     'Rubik-Bold': require('../assets/fonts/Rubik-Bold.ttf'),
     'Rubik-ExtraBold': require('../assets/fonts/Rubik-ExtraBold.ttf'),
@@ -50,12 +55,27 @@ export default function RootLayout() {
     if (fontsLoaded && isColorSchemeLoaded) {
       SplashScreen.hideAsync();
 
+      if (user) {
+        router.replace('/(root)/(tabs)');
+      }
+
       if (!user) {
-        console.log('not user');
-        // router.replace("/sign-in");
+        router.replace('/(auth)/sign-in');
       }
     }
   }, [fontsLoaded, isColorSchemeLoaded, user]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(true);
+      } else {
+        setUser(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   if (!isColorSchemeLoaded || !fontsLoaded) {
     return null;
@@ -66,7 +86,14 @@ export default function RootLayout() {
       <StatusBar style={isDarkColorScheme ? 'dark' : 'light'} />
       <Stack
         screenOptions={{
-          headerShown: false,
+          headerStyle: {
+            backgroundColor: colors.primary,
+          },
+          headerTitle: (props) => (
+            <Text className="text-3xl font-rubik-semibold text-primary-foreground">
+              Organizer
+            </Text>
+          ),
         }}
       />
     </ThemeProvider>

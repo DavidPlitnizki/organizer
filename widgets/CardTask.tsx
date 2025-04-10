@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { View } from 'react-native';
 import { useMemo, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import {
@@ -76,5 +75,7 @@ const CardTask = memo(({ title }: CardTaskProps) => {
     </Card>
   );
 });
+
+CardTask.displayName = 'CardTask';
 
 export default CardTask;

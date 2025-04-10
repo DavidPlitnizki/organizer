@@ -12,7 +12,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
   },
   globals: {
-    setTImeout: 'readonly',
-    clearTImeout: 'readonly',
+    setTimeout: 'readonly',
+    clearTimeout: 'readonly',
   },
 };

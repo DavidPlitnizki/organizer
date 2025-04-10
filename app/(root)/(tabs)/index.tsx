@@ -1,10 +1,10 @@
 import { FlatList, Platform } from 'react-native';
 import React, { useMemo, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { DATA } from '~/mockData';
 import ModalTask from '~/widgets/ModalTask';
 import CardTask from '~/widgets/CardTask';
 import SearchCard from '~/widgets/SearchCard';
+import { View } from 'react-native';
 
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -16,10 +16,10 @@ export default function Home() {
     );
   }, [searchValue]);
 
-  const paddingBottom = Platform.OS === 'ios' ? 'pb-14' : 'pb-20';
+  const paddingBottom = Platform.OS === 'ios' ? 'pb-28' : 'pb-24';
 
   return (
-    <SafeAreaView className={`relative px-2 h-full ${paddingBottom}`}>
+    <View className={`relative px-2 mt-4 h-full ${paddingBottom}`}>
       <SearchCard setValue={setSearchValue} setModalVisible={setModalVisible} />
       <FlatList
         className="mt-2"
@@ -32,6 +32,6 @@ export default function Home() {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
-    </SafeAreaView>
+    </View>
   );
 }
