@@ -28,6 +28,7 @@ const SignIn = () => {
   const { isDarkColorScheme } = useColorScheme();
   const { colors } = useTheme();
   const [isSecureText, setIsSecureText] = useState(true);
+  const [isPending, setIsPending] = useState(false);
   const [responseErrorMsg, setResponseErrorMsg] = useState('');
   const {
     control,
@@ -43,6 +44,7 @@ const SignIn = () => {
 
   const onSubmit = async (data: SignInFormDataType) => {
     setResponseErrorMsg('');
+    setIsPending(true);
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -83,6 +85,8 @@ const SignIn = () => {
       }
       console.log('Error Code:', error.code);
       console.log('Error Message:', error.message);
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -130,9 +134,9 @@ const SignIn = () => {
                   />
                   <TouchableOpacity onPress={toggleIsSecureText}>
                     {isSecureText ? (
-                      <EyeIcon color={colors.primary} />
-                    ) : (
                       <EyeOffIcon color={colors.primary} />
+                    ) : (
+                      <EyeIcon color={colors.primary} />
                     )}
                   </TouchableOpacity>
                 </View>
@@ -145,17 +149,17 @@ const SignIn = () => {
               </Text>
             )}
           </View>
-          <View className="flex flex-row">
+          <View className="flex flex-row items-center">
             {responseErrorMsg.length ? (
               <>
                 <AlertIcon className="text-destructive mr-2 items-center" />
-                <Text className="text-destructive font-rubik-semibold text-lg">
+                <Text className="text-destructive font-rubik-semibold text-base">
                   {responseErrorMsg}
                 </Text>
               </>
             ) : null}
           </View>
-          <Button onPress={handleSubmit(onSubmit)}>
+          <Button onPress={handleSubmit(onSubmit)} disabled={isPending}>
             <Text className="text-accent font-rubik-semibold">Sign In</Text>
           </Button>
           <Text className="text-lg font-rubik-light text-center mt-8 text-foreground">

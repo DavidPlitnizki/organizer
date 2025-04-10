@@ -5,6 +5,7 @@ import {
   ThemeProvider,
   DefaultTheme,
   DarkTheme,
+  useTheme,
 } from '@react-navigation/native';
 import { router, SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -14,6 +15,7 @@ import { useColorScheme } from '~/lib/useColorScheme';
 import { useEffect, useRef, useState } from 'react';
 import { auth } from '~/lib/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
+import { Text } from 'react-native';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -31,6 +33,7 @@ export default function RootLayout() {
   const { isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = useState(false);
   const [user, setUser] = useState(false);
+  const { colors } = useTheme();
   const [fontsLoaded] = useFonts({
     'Rubik-Bold': require('../assets/fonts/Rubik-Bold.ttf'),
     'Rubik-ExtraBold': require('../assets/fonts/Rubik-ExtraBold.ttf'),
@@ -65,11 +68,8 @@ export default function RootLayout() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log('User:', user.displayName);
-        console.log('User ID:', user.uid);
         setUser(true);
       } else {
-        console.log('No user signed in');
         setUser(false);
       }
     });
@@ -86,7 +86,14 @@ export default function RootLayout() {
       <StatusBar style={isDarkColorScheme ? 'dark' : 'light'} />
       <Stack
         screenOptions={{
-          headerShown: false,
+          headerStyle: {
+            backgroundColor: colors.primary,
+          },
+          headerTitle: (props) => (
+            <Text className="text-3xl font-rubik-semibold text-primary-foreground">
+              Organizer
+            </Text>
+          ),
         }}
       />
     </ThemeProvider>

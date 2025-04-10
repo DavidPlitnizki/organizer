@@ -8,6 +8,8 @@ import { useTheme } from '@react-navigation/native';
 import { Plus as PlusIcon } from '../../../lib/icons/PlusIcon';
 import { Button } from '~/components/ui/button';
 import { useRouter } from 'expo-router';
+import { ChartColumnIncreasing as StatisticsIcon } from '~/lib/icons/StatisticsIcon';
+import UserProfile from '~/widgets/UserProfile';
 
 const TabIcon = ({
   focused,
@@ -62,6 +64,16 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
+        name="planner"
+        options={{
+          title: 'Planner',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} title="Planner" icon={PlannerIcon} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="newTask"
         options={{
           title: 'Create',
@@ -77,12 +89,24 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="planner"
+        name="stats"
         options={{
-          title: 'Planner',
+          title: 'Statistics',
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} title="Planner" icon={PlannerIcon} />
+            <TabIcon focused={focused} title="Stats" icon={StatisticsIcon} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <View className="flex-1 mt-3 flex flex-col items-center">
+              <UserProfile />
+            </View>
           ),
         }}
       />

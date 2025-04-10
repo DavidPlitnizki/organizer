@@ -1,20 +1,22 @@
 import React, { createContext, useState } from 'react';
-import { AuthProviderProps, AuthProviderState } from './type';
+import { AuthProviderProps, AuthProviderState, LoginUserType } from './type';
 
 const initialState: AuthProviderState = {
-  isLoggedIn: false,
-  setIsLoggedIn: () => null,
+  isLoggedInUser: null,
+  setIsLoggedInUser: () => {},
 };
 
 export const AuthProviderContext =
   createContext<AuthProviderState>(initialState);
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedInUser, setIsLoggedInUser] = useState<LoginUserType | null>(
+    null
+  );
 
   const value = {
-    isLoggedIn,
-    setIsLoggedIn,
+    isLoggedInUser,
+    setIsLoggedInUser,
   };
 
   return (
