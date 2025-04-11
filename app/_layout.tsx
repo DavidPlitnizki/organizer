@@ -73,7 +73,6 @@ export default function RootLayout() {
         setUser(false);
       }
     });
-
     return () => unsubscribe();
   }, []);
 

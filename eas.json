@@ -8,6 +8,22 @@
       "android": {
         "buildType": "apk"
       },
+      "env": {
+        "ENVIRONMENT": "preview"
+      },
+      "ios": {
+        "simulator": true
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "ENVIRONMENT": "preview"
+      },
       "ios": {
         "simulator": true
       }
