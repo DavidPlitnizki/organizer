@@ -1,12 +1,11 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { Avatar, AvatarFallback } from '~/components/ui/avatar';
-import { getAuth, signOut } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
+import { auth } from '~/lib/firebase.config';
 
 const UserProfile = () => {
-  const auth = getAuth();
   const user = auth.currentUser;
-
   const userSign = user?.displayName ? user.displayName.slice(0, 2) : '--';
 
   //temp sign out - should be remove in the future
