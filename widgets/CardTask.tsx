@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useMemo, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import {
@@ -10,6 +10,9 @@ import {
 } from '~/components/ui/card';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Trash2 as DeleteIcon } from '~/lib/icons/DeleteIcon';
+import { TaskStatus } from '~/lib/types';
+import { Text } from '~/components/ui/text';
+import { View } from 'react-native';
 
 const CARD_COLORS = [
   'bg-emerald-100',
@@ -27,54 +30,88 @@ const CARD_COLORS = [
 
 interface CardTaskProps {
   title: string;
+  description: string;
+  status: TaskStatus;
+  createdAt: string;
+  owner: string;
+  id: string;
+  toggleStatus: () => void;
+  deleteTask: () => void;
 }
 
-const CardTask = memo(({ title }: CardTaskProps) => {
-  const [checked, setChecked] = useState(false);
-  const randomNumber = useMemo(
-    () => Math.floor(Math.random() * CARD_COLORS.length),
-    []
-  );
+const CardTask = memo(
+  ({ taskData, toggleStatus, deleteTask }: CardTaskProps) => {
+    const [checked, setChecked] = useState(taskData.status === 'done');
+    const randomNumber = useMemo(
+      () => Math.floor(Math.random() * CARD_COLORS.length),
+      []
+    );
 
-  return (
-    <Card
-      className={`flex flex-row w-full my-2 px-4 items-center justify-between ${checked ? 'bg-gray-300' : CARD_COLORS[randomNumber]}`}
-    >
-      <CardHeader className="flex flex-col px-1 max-w-72">
-        <CardTitle
-          className={`text-xl text-text font-rubik-bold ${checked ? 'line-through text-muted-foreground' : ''}`}
-        >
-          {title}
-        </CardTitle>
-        <CardDescription
-          className={`${checked ? 'line-through text-muted-foreground' : ''}`}
-          numberOfLines={3}
-          ellipsizeMode="tail"
-        >
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate,
-          ducimus molestias. Illum voluptatem, fuga qui provident eligendi
-          fugiat, praesentium quidem dolor atque iure necessitatibus ducimus
-          quis vero quisquam debitis! Ipsum.
-        </CardDescription>
-      </CardHeader>
+    const onDeleteTask = () => {
+      deleteTask(taskData.id);
+    };
 
-      <CardFooter className="p-0 items-center justify-center gap-8">
-        <Checkbox
-          aria-labelledby="task_done"
-          checked={checked}
-          onCheckedChange={setChecked}
-        />
-        <Button
-          size={'sm'}
-          variant={'outline'}
-          className="p-2 border-destructive bg-white"
-        >
-          <DeleteIcon color={'red'} />
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-});
+    useEffect(() => {
+      console.log('here');
+      const status = taskData.status === 'done' ? 'in progress' : 'done';
+      toggleStatus(taskData.id, status);
+    }, [checked]);
+
+    // const onToggleStatusTask = () => {
+    //   const status = taskData.status === 'done' ? 'in progress' : 'done';
+    //   toggleStatus(taskData.id, status);
+    // };
+
+    return (
+      <Card
+        className={`flex flex-row w-full my-2 px-4 items-center justify-between ${checked ? 'bg-gray-300' : CARD_COLORS[randomNumber]}`}
+      >
+        <CardHeader className="flex flex-col px-1 max-w-72">
+          <CardTitle className="mb-4">
+            <View className="flex flex-row w-full justify-between items-center">
+              <Text
+                className={`text-xl text-text font-rubik-bold ${checked ? 'line-through text-muted-foreground' : ''}`}
+              >
+                {taskData.title}
+              </Text>
+              <Text
+                className={`text-base text-text font-rubik-light ${checked ? 'line-through text-muted-foreground' : ''}`}
+              >
+                {taskData.createdAt}
+              </Text>
+            </View>
+          </CardTitle>
+          <CardDescription
+            className={`${checked ? 'line-through text-muted-foreground' : ''}`}
+            numberOfLines={3}
+            ellipsizeMode="tail"
+          >
+            <Text className="text-md font-rubik-medium">
+              {taskData.description}
+            </Text>
+          </CardDescription>
+        </CardHeader>
+
+        <CardFooter className="p-0 h-full items-end justify-center gap-8 mb-4">
+          <Checkbox
+            className="mb-1.5"
+            aria-labelledby="task_done"
+            checked={checked}
+            onCheckedChange={setChecked}
+          />
+          <Button
+            size={'sm'}
+            variant={'outline'}
+            className="p-2 border-destructive bg-white"
+            onPress={onDeleteTask}
+          >
+            <DeleteIcon color={'red'} />
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+);
 
 CardTask.displayName = 'CardTask';
 
