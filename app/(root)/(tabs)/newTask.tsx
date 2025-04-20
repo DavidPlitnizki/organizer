@@ -1,130 +1,123 @@
-import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from 'react';
+import { View, Text } from 'react-native';
 import { Button } from '~/components/ui/button';
-import { Card, CardHeader, CardTitle } from '~/components/ui/card';
-import { Separator } from '~/components/ui/separator';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Input } from '~/components/ui/input';
+import { Textarea } from '~/components/ui/textarea';
+import { collection, addDoc } from 'firebase/firestore';
+import { db, auth } from '~/lib/firebase.config';
+import { TaskStatusSchema, TaskType } from '~/lib/types';
+
+const taskSchema = z.object({
+  title: z.string().min(3, { message: 'Must be at least 3 characters' }),
+  description: z.string().min(3, { message: 'Must be at least 3 characters' }),
+});
+
+type TaskFormDataType = z.infer<typeof taskSchema>;
 
 const NewTask = () => {
+  const [isPending, setIsPending] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<TaskFormDataType>({
+    resolver: zodResolver(taskSchema),
+  });
+
+  const onHandleSubmit = async (data: TaskFormDataType) => {
+    console.log('data: ', data);
+    if (!auth.currentUser?.email) {
+      console.log('Missing user data');
+      return;
+    }
+    setIsPending(true);
+    const now = new Date();
+    const formatted = now.toLocaleString();
+
+    const newTask: TaskType = {
+      title: data.title,
+      description: data.description,
+      status: TaskStatusSchema.Values.active,
+      createdAt: formatted,
+      owner: auth.currentUser.email,
+    };
+
+    try {
+      const docRef = await addDoc(collection(db, 'tasks'), newTask);
+      console.log('Card written with ID: ', docRef.id);
+    } catch (e) {
+      console.error('Error adding card: ', e);
+    } finally {
+      setIsPending(false);
+      reset();
+    }
+  };
+
   return (
-    <SafeAreaView className="relative px-2 h-full pb-20">
+    <View className="relative px-2 h-full pb-20">
       <View className="mt-4 gap-2">
-        <Text className="font-rubik-bold text-3xl">Create Routing Task</Text>
-        <Text className="font-rubik-medium text-lg text-secondary-foreground">
-          Choose custom one or take from template
-        </Text>
+        <Text className="font-rubik-bold text-3xl">Create New Task</Text>
       </View>
 
-      <View>
-        <Button className="">
-          <Text className="text-accent font-rubik-semibold">CUSTOM</Text>
+      <View className="px-10 my-4 flex flex-col h-4/5 justify-center gap-4">
+        <View>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="Title..."
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="title"
+          />
+          {errors.title && (
+            <Text className="text-destructive font-rubik-medium">
+              {errors.title.message}
+            </Text>
+          )}
+        </View>
+        <View>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Textarea
+                placeholder="Description..."
+                value={value}
+                onChangeText={onChange}
+                aria-labelledby="textareaLabel"
+              />
+            )}
+            name="description"
+          />
+          {errors.description && (
+            <Text className="text-destructive font-rubik-medium">
+              {errors.description.message}
+            </Text>
+          )}
+        </View>
+
+        {/* <View className="flex flex-row items-center">
+          {responseErrorMsg.length ? (
+            <>
+              <AlertIcon className="text-destructive mr-2 items-center" />
+              <Text className="text-destructive font-rubik-semibold text-base">
+                {responseErrorMsg}
+              </Text>
+            </>
+          ) : null}
+        </View> */}
+        <Button onPress={handleSubmit(onHandleSubmit)} disabled={isPending}>
+          <Text className="text-accent font-rubik-semibold">Create Task</Text>
         </Button>
-
-        <Separator className="my-4" />
-
-        <ScrollView>
-          <View>
-            <Text>Morning</Text>
-            <Card
-              className={`flex flex-row w-full my-2 px-4 items-center justify-between`}
-            >
-              <CardHeader className="flex flex-col px-1 max-w-72">
-                <CardTitle className={`text-xl text-text font-rubik-bold`}>
-                  <Text>washing</Text>
-                  <Text>10 min</Text>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            <Card
-              className={`flex flex-row w-full my-2 px-4 items-center justify-between`}
-            >
-              <CardHeader className="flex flex-col px-1 max-w-72">
-                <CardTitle className={`text-xl text-text font-rubik-bold`}>
-                  <Text>washing</Text>
-                  <Text>10 min</Text>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            <Card
-              className={`flex flex-row w-full my-2 px-4 items-center justify-between`}
-            >
-              <CardHeader className="flex flex-col px-1 max-w-72">
-                <CardTitle className={`text-xl text-text font-rubik-bold`}>
-                  <Text>washing</Text>
-                  <Text>10 min</Text>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-          </View>
-          <View>
-            <Text>day</Text>
-            <Card
-              className={`flex flex-row w-full my-2 px-4 items-center justify-between`}
-            >
-              <CardHeader className="flex flex-col px-1 max-w-72">
-                <CardTitle className={`text-xl text-text font-rubik-bold`}>
-                  <Text>washing</Text>
-                  <Text>10 min</Text>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            <Card
-              className={`flex flex-row w-full my-2 px-4 items-center justify-between`}
-            >
-              <CardHeader className="flex flex-col px-1 max-w-72">
-                <CardTitle className={`text-xl text-text font-rubik-bold`}>
-                  <Text>washing</Text>
-                  <Text>10 min</Text>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            <Card
-              className={`flex flex-row w-full my-2 px-4 items-center justify-between`}
-            >
-              <CardHeader className="flex flex-col px-1 max-w-72">
-                <CardTitle className={`text-xl text-text font-rubik-bold`}>
-                  <Text>washing</Text>
-                  <Text>10 min</Text>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-          </View>
-          <View>
-            <Text>evning</Text>
-            <Card
-              className={`flex flex-row w-full my-2 px-4 items-center justify-between`}
-            >
-              <CardHeader className="flex flex-col px-1 max-w-72">
-                <CardTitle className={`text-xl text-text font-rubik-bold`}>
-                  <Text>washing</Text>
-                  <Text>10 min</Text>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            <Card
-              className={`flex flex-row w-full my-2 px-4 items-center justify-between`}
-            >
-              <CardHeader className="flex flex-col px-1 max-w-72">
-                <CardTitle className={`text-xl text-text font-rubik-bold`}>
-                  <Text>washing</Text>
-                  <Text>10 min</Text>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            <Card
-              className={`flex flex-row w-full my-2 px-4 items-center justify-between`}
-            >
-              <CardHeader className="flex flex-col px-1 max-w-72">
-                <CardTitle className={`text-xl text-text font-rubik-bold`}>
-                  <Text>washing</Text>
-                  <Text>10 min</Text>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-          </View>
-        </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
