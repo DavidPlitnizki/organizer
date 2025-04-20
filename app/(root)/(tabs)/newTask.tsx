@@ -8,7 +8,7 @@ import { Input } from '~/components/ui/input';
 import { Textarea } from '~/components/ui/textarea';
 import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from '~/lib/firebase.config';
-import { TaskType } from '~/lib/types';
+import { TaskStatusSchema, TaskType } from '~/lib/types';
 
 const taskSchema = z.object({
   title: z.string().min(3, { message: 'Must be at least 3 characters' }),
@@ -41,7 +41,7 @@ const NewTask = () => {
     const newTask: TaskType = {
       title: data.title,
       description: data.description,
-      status: 'in progress',
+      status: TaskStatusSchema.Values.active,
       createdAt: formatted,
       owner: auth.currentUser.email,
     };

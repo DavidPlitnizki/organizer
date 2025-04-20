@@ -1,6 +1,5 @@
 import { FlatList, Platform } from 'react-native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-// import { DATA } from '~/mockData';
 import ModalTask from '~/widgets/ModalTask';
 import CardTask from '~/widgets/CardTask';
 import SearchCard from '~/widgets/SearchCard';
@@ -16,10 +15,10 @@ import {
 } from 'firebase/firestore';
 import { auth, db } from '~/lib/firebase.config';
 import { useIsFocused } from '@react-navigation/native';
-// import { z } from 'zod';
+import { TaskDataWithID, TaskSchema, TaskStatusType } from '~/lib/types';
 
 export default function Home() {
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<TaskDataWithID[]>([]);
   // const [isPending, setIsPending] = useState(false);
   // const [isError, setIsError] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -28,30 +27,21 @@ export default function Home() {
 
   useEffect(() => {
     const getData = async (email: string) => {
-      // const snapshot = await getDocs(collection(db, 'tasks'));
-      // const cards = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      // console.log(cards);
-
-      // const TaskSchema = z.object({
-      //   title: z.string(),
-      //   description: z.string(),
-      //   createdAt: z.date(),
-      //   status: z.string(),
-      //   owner: z.string(),
-      // });
-      // type TaskData = z.infer<typeof TaskSchema>;
-      // type Task = TaskData & { id: string };
-
       const q = query(collection(db, 'tasks'), where('owner', '==', email));
       try {
         const querySnapshot = await getDocs(q);
-        const tasks = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const tasks: TaskDataWithID[] = [];
+        querySnapshot.docs.forEach((doc) => {
+          console.log('doc: ', doc.data());
+          const result = TaskSchema.safeParse(doc.data());
+          if (result.success) {
+            tasks.push({ id: doc.id, ...result.data });
+          } else {
+            console.warn('Invalid task data:', result.error);
+          }
+        });
         console.log('My tasks:', tasks);
         setTasks(tasks);
-        // return tasks;
       } catch (e) {
         console.error('Error fetching tasks:', e);
       }
@@ -62,7 +52,7 @@ export default function Home() {
   }, [isFocused]);
 
   const onToggleStatusTask = useCallback(
-    async (taskId: string, status: string) => {
+    async (taskId: string, status: TaskStatusType) => {
       try {
         await updateDoc(doc(db, 'tasks', taskId), {
           status: status,
@@ -117,7 +107,7 @@ export default function Home() {
           <CardTask
             toggleStatus={onToggleStatusTask}
             deleteTask={onDeleteTask}
-            taskData={item}
+            task={item}
           />
         )}
         keyExtractor={(item) => item.id}
