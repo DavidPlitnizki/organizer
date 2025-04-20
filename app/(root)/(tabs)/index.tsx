@@ -86,8 +86,17 @@ export default function Home() {
     );
   }, [searchValue, tasks]);
 
+  const isPendingTaskState = useCallback(
+    (id: string) => {
+      return (
+        pendingToggleTask ||
+        (pendingDeleteTask && loadingStateTaskIds.includes(id))
+      );
+    },
+    [loadingStateTaskIds, pendingDeleteTask, pendingToggleTask]
+  );
+
   const paddingBottom = Platform.OS === 'ios' ? 'pb-28' : 'pb-24';
-  const isPending = pendingToggleTask || pendingDeleteTask;
 
   return (
     <View className={`relative px-2 mt-4 h-full ${paddingBottom}`}>
@@ -99,7 +108,7 @@ export default function Home() {
           <CardTask
             toggleStatus={onToggleStatusTask}
             deleteTask={onDeleteTask}
-            isLoading={isPending && loadingStateTaskIds.includes(item.id)}
+            isLoading={isPendingTaskState(item.id)}
             task={item}
           />
         )}

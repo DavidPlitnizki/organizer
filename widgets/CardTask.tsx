@@ -86,7 +86,7 @@ const CardTask = memo(
             numberOfLines={3}
             ellipsizeMode="tail"
           >
-            <Text className="text-md font-rubik-medium">
+            <Text className="text-md text-black font-rubik-medium">
               {task.description}
             </Text>
           </CardDescription>
