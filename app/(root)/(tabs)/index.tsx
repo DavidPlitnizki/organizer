@@ -89,10 +89,12 @@ export default function Home() {
   }, [searchValue, tasks]);
 
   const isPendingTaskState = useCallback(
-    (id: string) => {
+    (taskId: string) => {
       return (
-        pendingToggleTask ||
-        (pendingDeleteTask && loadingStateTaskIds.includes(id))
+        (pendingToggleTask || pendingDeleteTask) &&
+        loadingStateTaskIds.find(
+          (id) => id.toLowerCase() === taskId.toLowerCase()
+        )
       );
     },
     [loadingStateTaskIds, pendingDeleteTask, pendingToggleTask]
@@ -110,7 +112,7 @@ export default function Home() {
           <CardTask
             toggleStatus={onToggleStatusTask}
             deleteTask={onDeleteTask}
-            isLoading={isPendingTaskState(item.id)}
+            isLoading={!!isPendingTaskState(item.id)}
             task={item}
           />
         )}
