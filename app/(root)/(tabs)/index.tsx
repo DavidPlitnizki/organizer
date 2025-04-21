@@ -74,10 +74,12 @@ export default function Home() {
       storeTaskIdsManipulate(taskId);
       await deleteTask(taskId);
       if (!deleteErrorMsg) {
+        const removedTasks = tasks.filter((item) => item.id !== taskId);
+        setTasks(removedTasks);
         removeTaskIdsManipulate(taskId);
       }
     },
-    [deleteErrorMsg, deleteTask, removeTaskIdsManipulate]
+    [deleteErrorMsg, deleteTask, removeTaskIdsManipulate, setTasks, tasks]
   );
 
   const filteredData = useMemo(() => {

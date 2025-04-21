@@ -5,22 +5,20 @@ export const taskStatusList = ['active', 'done'] as const;
 export const TaskStatusSchema = z.enum(taskStatusList);
 export type TaskStatusType = z.infer<typeof TaskStatusSchema>;
 
-const timestampOrDate = z
-  .union([z.instanceof(Date), z.instanceof(Timestamp)])
-  .transform((val) => (val instanceof Timestamp ? val.toDate() : val));
+const timestampInstance = z.instanceof(Timestamp);
 
 export type TaskType = {
   title: string;
   description: string;
   status: TaskStatusType;
-  createdAt: string;
+  createdAt: Timestamp;
   owner: string;
 };
 
 export const TaskSchema = z.object({
   title: z.string(),
   description: z.string(),
-  createdAt: timestampOrDate,
+  createdAt: timestampInstance,
   status: TaskStatusSchema,
   owner: z.string(),
 });

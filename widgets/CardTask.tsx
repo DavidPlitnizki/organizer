@@ -77,7 +77,7 @@ const CardTask = memo(
               <Text
                 className={`text-base text-text font-rubik-light ${checked ? 'line-through text-muted-foreground' : ''}`}
               >
-                {task.createdAt.toLocaleString()}
+                {task.createdAt.toDate().toLocaleString()}
               </Text>
             </View>
           </CardTitle>
