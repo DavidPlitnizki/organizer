@@ -4,60 +4,55 @@ import ModalTask from '~/widgets/ModalTask';
 import CardTask from '~/widgets/CardTask';
 import SearchCard from '~/widgets/SearchCard';
 import { View } from 'react-native';
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
-import { auth, db } from '~/lib/firebase.config';
+import { auth } from '~/lib/firebase.config';
 import { useIsFocused } from '@react-navigation/native';
-import { TaskDataWithID, TaskSchema, TaskStatusType } from '~/lib/types';
+import { TaskStatusType } from '~/lib/types';
+import useGetTasks from '~/api/tasks/usGetTasks';
+import useToggleTask from '~/api/tasks/useToggleTask';
+import useDeleteTask from '~/api/tasks/useDeleteTask';
 
 export default function Home() {
-  const [tasks, setTasks] = useState<TaskDataWithID[]>([]);
-  // const [isPending, setIsPending] = useState(false);
-  // const [isError, setIsError] = useState(false);
+  const { getData, tasks, setTasks } = useGetTasks();
+  const {
+    toggleStatusTask,
+    errorMsg: toggleErrorMsg,
+    isPending: pendingToggleTask,
+  } = useToggleTask();
+  const {
+    deleteTask,
+    errorMsg: deleteErrorMsg,
+    isPending: pendingDeleteTask,
+  } = useDeleteTask();
   const [modalVisible, setModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [loadingStateTaskIds, setLoadingStateTaskIds] = useState<string[]>([
+    '',
+  ]);
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    const getData = async (email: string) => {
-      const q = query(collection(db, 'tasks'), where('owner', '==', email));
-      try {
-        const querySnapshot = await getDocs(q);
-        const tasks: TaskDataWithID[] = [];
-        querySnapshot.docs.forEach((doc) => {
-          console.log('doc: ', doc.data());
-          const result = TaskSchema.safeParse(doc.data());
-          if (result.success) {
-            tasks.push({ id: doc.id, ...result.data });
-          } else {
-            console.warn('Invalid task data:', result.error);
-          }
-        });
-        console.log('My tasks:', tasks);
-        setTasks(tasks);
-      } catch (e) {
-        console.error('Error fetching tasks:', e);
-      }
-    };
     if (auth.currentUser?.email && isFocused) {
       getData(auth.currentUser.email);
     }
-  }, [isFocused]);
+  }, [getData, isFocused]);
+
+  const storeTaskIdsManipulate = (taskId: string) => {
+    setLoadingStateTaskIds((prev) => [...prev, taskId]);
+  };
+
+  const removeTaskIdsManipulate = useCallback(
+    (taskId: string) => {
+      const excludeId = loadingStateTaskIds.filter((id) => id !== taskId);
+      setLoadingStateTaskIds(excludeId);
+    },
+    [loadingStateTaskIds]
+  );
 
   const onToggleStatusTask = useCallback(
     async (taskId: string, status: TaskStatusType) => {
-      try {
-        await updateDoc(doc(db, 'tasks', taskId), {
-          status: status,
-        });
-        console.log('Status updated');
+      storeTaskIdsManipulate(taskId);
+      await toggleStatusTask(taskId, status);
+      if (!toggleErrorMsg) {
         const updatedStatusTasks = tasks.map((item) => {
           if (item.id === taskId) {
             return {
@@ -68,25 +63,23 @@ export default function Home() {
           return item;
         });
         setTasks(updatedStatusTasks);
-      } catch (error) {
-        console.error('Error updating status:', error);
       }
+      removeTaskIdsManipulate(taskId);
     },
-    [tasks]
+    [removeTaskIdsManipulate, setTasks, tasks, toggleErrorMsg, toggleStatusTask]
   );
 
   const onDeleteTask = useCallback(
     async (taskId: string) => {
-      try {
-        await deleteDoc(doc(db, 'tasks', taskId));
-        console.log('Task deleted');
-        const filteredTasks = tasks.filter((item) => item.id !== taskId);
-        setTasks(filteredTasks);
-      } catch (error) {
-        console.error('Error deleting task:', error);
+      storeTaskIdsManipulate(taskId);
+      await deleteTask(taskId);
+      if (!deleteErrorMsg) {
+        const removedTasks = tasks.filter((item) => item.id !== taskId);
+        setTasks(removedTasks);
+        removeTaskIdsManipulate(taskId);
       }
     },
-    [tasks]
+    [deleteErrorMsg, deleteTask, removeTaskIdsManipulate, setTasks, tasks]
   );
 
   const filteredData = useMemo(() => {
@@ -94,6 +87,16 @@ export default function Home() {
       el.title.toLowerCase().includes(searchValue.toLowerCase())
     );
   }, [searchValue, tasks]);
+
+  const isPendingTaskState = useCallback(
+    (id: string) => {
+      return (
+        pendingToggleTask ||
+        (pendingDeleteTask && loadingStateTaskIds.includes(id))
+      );
+    },
+    [loadingStateTaskIds, pendingDeleteTask, pendingToggleTask]
+  );
 
   const paddingBottom = Platform.OS === 'ios' ? 'pb-28' : 'pb-24';
 
@@ -107,6 +110,7 @@ export default function Home() {
           <CardTask
             toggleStatus={onToggleStatusTask}
             deleteTask={onDeleteTask}
+            isLoading={isPendingTaskState(item.id)}
             task={item}
           />
         )}
