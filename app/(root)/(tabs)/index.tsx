@@ -1,4 +1,4 @@
-import { FlatList, Platform } from 'react-native';
+import { ActivityIndicator, FlatList, Platform } from 'react-native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ModalTask from '~/widgets/ModalTask';
 import CardTask from '~/widgets/CardTask';
@@ -10,9 +10,11 @@ import { TaskStatusType } from '~/lib/types';
 import useGetTasks from '~/api/tasks/usGetTasks';
 import useToggleTask from '~/api/tasks/useToggleTask';
 import useDeleteTask from '~/api/tasks/useDeleteTask';
+import { useTheme } from '@react-navigation/native';
+import LoaderView from '~/widgets/LoaderView';
 
 export default function Home() {
-  const { getData, tasks, setTasks } = useGetTasks();
+  const { getData, tasks, setTasks, isPending } = useGetTasks();
   const {
     toggleStatusTask,
     errorMsg: toggleErrorMsg,
@@ -23,6 +25,7 @@ export default function Home() {
     errorMsg: deleteErrorMsg,
     isPending: pendingDeleteTask,
   } = useDeleteTask();
+  const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [loadingStateTaskIds, setLoadingStateTaskIds] = useState<string[]>([
@@ -101,6 +104,14 @@ export default function Home() {
   );
 
   const paddingBottom = Platform.OS === 'ios' ? 'pb-28' : 'pb-24';
+
+  if (isPending) {
+    return (
+      <LoaderView>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </LoaderView>
+    );
+  }
 
   return (
     <View className={`relative px-2 mt-4 h-full ${paddingBottom}`}>
