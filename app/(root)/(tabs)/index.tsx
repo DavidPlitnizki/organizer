@@ -1,6 +1,6 @@
 import { ActivityIndicator, FlatList, Platform } from 'react-native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import ModalTask from '~/widgets/ModalTask';
+import YesOrNoModalProps from '~/widgets/YesOrNoModal';
 import CardTask from '~/widgets/CardTask';
 import SearchCard from '~/widgets/SearchCard';
 import { View } from 'react-native';
@@ -12,6 +12,7 @@ import useToggleTask from '~/api/tasks/useToggleTask';
 import useDeleteTask from '~/api/tasks/useDeleteTask';
 import { useTheme } from '@react-navigation/native';
 import LoaderView from '~/widgets/LoaderView';
+import { router } from 'expo-router';
 
 export default function Home() {
   const { getData, tasks, setTasks, isPending } = useGetTasks();
@@ -28,6 +29,7 @@ export default function Home() {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [selectedTaskID, setSelectedTaskID] = useState('');
   const [loadingStateTaskIds, setLoadingStateTaskIds] = useState<string[]>([
     '',
   ]);
@@ -72,24 +74,46 @@ export default function Home() {
     [removeTaskIdsManipulate, setTasks, tasks, toggleErrorMsg, toggleStatusTask]
   );
 
-  const onDeleteTask = useCallback(
-    async (taskId: string) => {
-      storeTaskIdsManipulate(taskId);
-      await deleteTask(taskId);
-      if (!deleteErrorMsg) {
-        const removedTasks = tasks.filter((item) => item.id !== taskId);
-        setTasks(removedTasks);
-        removeTaskIdsManipulate(taskId);
-      }
-    },
-    [deleteErrorMsg, deleteTask, removeTaskIdsManipulate, setTasks, tasks]
-  );
+  const onAskDeletingTask = useCallback((taskId: string) => {
+    setSelectedTaskID(taskId);
+    setModalVisible(true);
+  }, []);
+
+  const onCancelDeletingTask = useCallback(() => {
+    setSelectedTaskID('');
+  }, []);
+
+  const onDeleteTask = useCallback(async () => {
+    if (!selectedTaskID) return;
+    storeTaskIdsManipulate(selectedTaskID);
+    await deleteTask(selectedTaskID);
+    if (!deleteErrorMsg) {
+      const removedTasks = tasks.filter((item) => item.id !== selectedTaskID);
+      setTasks(removedTasks);
+      removeTaskIdsManipulate(selectedTaskID);
+    }
+    setSelectedTaskID('');
+  }, [
+    deleteErrorMsg,
+    deleteTask,
+    removeTaskIdsManipulate,
+    selectedTaskID,
+    setTasks,
+    tasks,
+  ]);
 
   const filteredData = useMemo(() => {
     return tasks.filter((el) =>
       el.title.toLowerCase().includes(searchValue.toLowerCase())
     );
   }, [searchValue, tasks]);
+
+  const onpPressTask = useCallback((id: string) => {
+    router.push({
+      pathname: '/taskProperties/[id]',
+      params: { id },
+    });
+  }, []);
 
   const isPendingTaskState = useCallback(
     (taskId: string) => {
@@ -121,8 +145,9 @@ export default function Home() {
         data={filteredData}
         renderItem={({ item }) => (
           <CardTask
+            pressTask={onpPressTask}
             toggleStatus={onToggleStatusTask}
-            deleteTask={onDeleteTask}
+            deleteTask={onAskDeletingTask}
             isLoading={!!isPendingTaskState(item.id)}
             task={item}
           />
@@ -130,9 +155,13 @@ export default function Home() {
         keyExtractor={(item) => item.id}
       />
 
-      <ModalTask
+      <YesOrNoModalProps
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
+        onCancel={onCancelDeletingTask}
+        onSuccess={onDeleteTask}
+        successText="Delete"
+        cancelText="Cancel"
       />
     </View>
   );

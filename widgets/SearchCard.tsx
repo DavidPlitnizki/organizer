@@ -50,7 +50,7 @@ const SearchCard = memo(({ setValue, setModalVisible }: IProps) => {
         <Button
           variant={'ghost'}
           className="rounded-full m-0 p-0 w-12 active:scale-95"
-          onPress={() => setModalVisible(true)}
+          onPress={() => console.log('sub menu')}
         >
           <CircleEllipsis size={32} color={colors.text} />
         </Button>

@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import { auth } from '~/lib/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Text } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -82,19 +83,22 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? 'dark' : 'light'} />
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: colors.primary,
-          },
-          headerTitle: (props) => (
-            <Text className="text-3xl font-rubik-semibold text-primary-foreground">
-              Organizer
-            </Text>
-          ),
-        }}
-      />
+      <GestureHandlerRootView>
+        <StatusBar style={isDarkColorScheme ? 'dark' : 'light'} />
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: colors.primary,
+            },
+            headerTintColor: '#fff',
+            headerTitle: (props) => (
+              <Text className="text-3xl font-rubik-semibold text-primary-foreground">
+                Organizer
+              </Text>
+            ),
+          }}
+        />
+      </GestureHandlerRootView>
     </ThemeProvider>
   );
 }

@@ -1,4 +1,10 @@
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import {
+  collection,
+  documentId,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
 import { useCallback, useState } from 'react';
 import { ZodError } from 'zod';
 import { db } from '~/lib/firebase.config';
@@ -11,10 +17,14 @@ const useGetTasks = () => {
     null
   );
 
-  const getData = useCallback(async (email: string) => {
+  const getData = useCallback(async (email: string, id?: string) => {
     try {
       setIsPending(true);
-      const q = query(collection(db, 'tasks'), where('owner', '==', email));
+      const filters = [where('owner', '==', email)];
+      if (id?.trim()) {
+        filters.push(where(documentId(), '==', id));
+      }
+      const q = query(collection(db, 'tasks'), ...filters);
       const querySnapshot = await getDocs(q);
       const tasks: TaskDataWithID[] = [];
       querySnapshot.docs.forEach((doc) => {
