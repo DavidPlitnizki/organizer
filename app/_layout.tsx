@@ -17,6 +17,7 @@ import { auth } from '~/lib/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Text } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { PortalHost } from '@rn-primitives/portal';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -98,6 +99,7 @@ export default function RootLayout() {
             ),
           }}
         />
+        <PortalHost />
       </GestureHandlerRootView>
     </ThemeProvider>
   );

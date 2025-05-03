@@ -79,8 +79,9 @@ const NewTask = () => {
         <View>
           <Controller
             control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, value } }) => (
               <Textarea
+                className="min-h-[30%]"
                 placeholder="Description..."
                 value={value}
                 onChangeText={onChange}

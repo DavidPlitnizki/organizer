@@ -1,6 +1,5 @@
 import { ActivityIndicator, FlatList, Platform } from 'react-native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import YesOrNoModalProps from '~/widgets/YesOrNoModal';
 import CardTask from '~/widgets/CardTask';
 import SearchCard from '~/widgets/SearchCard';
 import { View } from 'react-native';
@@ -13,6 +12,8 @@ import useDeleteTask from '~/api/tasks/useDeleteTask';
 import { useTheme } from '@react-navigation/native';
 import LoaderView from '~/widgets/LoaderView';
 import { router } from 'expo-router';
+import SortTaskModal from '~/widgets/SortTaskModal';
+import AlertDialogModal from '~/widgets/AlertDialogModal';
 
 export default function Home() {
   const { getData, tasks, setTasks, isPending } = useGetTasks();
@@ -27,7 +28,8 @@ export default function Home() {
     isPending: pendingDeleteTask,
   } = useDeleteTask();
   const { colors } = useTheme();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [alertModalVisible, setAlertModalVisible] = useState(false);
+  const [sortTasksModalVisible, setSortTasksModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [selectedTaskID, setSelectedTaskID] = useState('');
   const [loadingStateTaskIds, setLoadingStateTaskIds] = useState<string[]>([
@@ -76,7 +78,7 @@ export default function Home() {
 
   const onAskDeletingTask = useCallback((taskId: string) => {
     setSelectedTaskID(taskId);
-    setModalVisible(true);
+    setAlertModalVisible(true);
   }, []);
 
   const onCancelDeletingTask = useCallback(() => {
@@ -139,7 +141,10 @@ export default function Home() {
 
   return (
     <View className={`relative px-2 mt-4 h-full ${paddingBottom}`}>
-      <SearchCard setValue={setSearchValue} setModalVisible={setModalVisible} />
+      <SearchCard
+        setValue={setSearchValue}
+        setModalVisible={setSortTasksModalVisible}
+      />
       <FlatList
         className="mt-2"
         data={filteredData}
@@ -154,10 +159,21 @@ export default function Home() {
         )}
         keyExtractor={(item) => item.id}
       />
-
-      <YesOrNoModalProps
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
+      <View>
+        <SortTaskModal
+          modalVisible={sortTasksModalVisible}
+          setModalVisible={setSortTasksModalVisible}
+          onCancel={onCancelDeletingTask}
+          onSuccess={onDeleteTask}
+          successText="Update"
+          cancelText="Cancel"
+          variantCancelButton="secondary"
+          variantSuccessButton="default"
+        />
+      </View>
+      <AlertDialogModal
+        modalVisible={alertModalVisible}
+        setModalVisible={setAlertModalVisible}
         onCancel={onCancelDeletingTask}
         onSuccess={onDeleteTask}
         successText="Delete"
