@@ -9,18 +9,11 @@ import { auth } from '~/lib/firebase.config';
 import { useIsFocused } from '@react-navigation/native';
 import LoaderView from '~/widgets/LoaderView';
 import { Separator } from '~/components/ui/separator';
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '~/components/ui/card';
+import { Card } from '~/components/ui/card';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Trash2 as DeleteIcon } from '~/lib/icons/DeleteIcon';
 import { Button } from '~/components/ui/button';
-import { H2, H3, H4 } from '~/components/ui/typography';
+import { H2, H4 } from '~/components/ui/typography';
 
 const TaskProperties = () => {
   const { id } = useLocalSearchParams();
@@ -110,48 +103,6 @@ const TaskProperties = () => {
           </Button>
         </View>
       </Card>
-      {/* <Card
-        className={`relative flex-column overflow-hidden w-full px-4 items-center justify-between bg-indigo-100`}
-      >
-        <CardHeader className="flex flex-col px-1 max-w-72">
-          <CardTitle className="mb-4">
-            <View className="flex w-full font-rubik-extrabold">
-              <Text className={`text-xl text-text font-rubik-bold `}>
-                {task.title}
-              </Text>
-            </View>
-          </CardTitle>
-          <CardDescription>
-            <Text className="text-md text-card-foreground font-rubik-medium">
-              {task.description}
-            </Text>
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          <Text>{'Status: ' + task.status}</Text>
-          <Text className={`text-base text-text font-rubik-light `}>
-            {'Created At: ' + task.createdAt.toDate().toLocaleString()}
-          </Text>
-        </CardContent>
-
-        <CardFooter className="p-0 items-end justify-center gap-8 mb-4">
-          <Checkbox
-            className="mb-1.5"
-            aria-labelledby="task_done"
-            checked={checked}
-            onCheckedChange={onToggleStatus}
-          />
-          <Button
-            size={'sm'}
-            variant={'outline'}
-            className="p-2 border-destructive bg-white"
-            onPress={onDeleteTask}
-          >
-            <DeleteIcon color={'red'} />
-          </Button>
-        </CardFooter>
-      </Card> */}
     </>
   );
 };
