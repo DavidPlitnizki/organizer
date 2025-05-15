@@ -14,7 +14,7 @@ const useCreateTask = () => {
     try {
       setIsPending(true);
       const docRef = await addDoc(collection(db, 'tasks'), newTask);
-      console.log('Task deleted: ', docRef.id);
+      console.log('Task created: ', docRef.id);
     } catch (e: unknown) {
       if (e instanceof Error) {
         console.error('Error create task:', e.message);

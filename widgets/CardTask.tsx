@@ -130,6 +130,7 @@ const CardTask = memo(
 
     return (
       <>
+        {/* BACKGROUND BUTTONS */}
         <Card className="absolute w-full overflow-hidden h-[87%] my-2 flex-1 flex flex-row justify-between items-center box-border shadow-none border-0">
           <View className="rounded-lg h-full w-1/4 bg-green-400 p-4 flex flex-col justify-center items-center">
             <Button
