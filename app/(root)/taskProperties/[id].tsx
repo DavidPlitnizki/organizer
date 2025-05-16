@@ -12,6 +12,7 @@ import { Separator } from '~/components/ui/separator';
 import { Card } from '~/components/ui/card';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Trash2 as DeleteIcon } from '~/lib/icons/DeleteIcon';
+import { Pencil as EditIcon } from '~/lib/icons/EditIcon';
 import { Button } from '~/components/ui/button';
 import { H2, H4 } from '~/components/ui/typography';
 
@@ -76,8 +77,16 @@ const TaskProperties = () => {
       />
       <Card className="flex bg-indigo-100 relative p-4 mt-4 rounded-lg w-[92%] border shadow mx-auto">
         {/* Header */}
-        <View>
+        <View className="flex flex-row justify-between items-center">
           <H2>{task.title}</H2>
+          <Button
+            size={'lg'}
+            variant={'outline'}
+            className="p-4 border-green-500 bg-white"
+            onPress={onDeleteTask}
+          >
+            <EditIcon color={'green'} />
+          </Button>
         </View>
         {/* Body */}
         <Separator className="bg-gray-900/35 my-4" />
@@ -85,14 +94,7 @@ const TaskProperties = () => {
           <H4 className="font-rubik-medium">{task.description}</H4>
         </ScrollView>
         {/* bottom */}
-        <View className="flex flex-row mt-8 items-center justify-end gap-12">
-          <View className="scale-[2.3]">
-            <Checkbox
-              aria-labelledby="task_done"
-              checked={checked}
-              onCheckedChange={onToggleStatus}
-            />
-          </View>
+        <View className="flex flex-row mt-8 items-center justify-between gap-12">
           <Button
             size={'lg'}
             variant={'outline'}
@@ -101,6 +103,13 @@ const TaskProperties = () => {
           >
             <DeleteIcon color={'red'} />
           </Button>
+          <View className="scale-[2.3] mr-4">
+            <Checkbox
+              aria-labelledby="task_done"
+              checked={checked}
+              onCheckedChange={onToggleStatus}
+            />
+          </View>
         </View>
       </Card>
     </>
